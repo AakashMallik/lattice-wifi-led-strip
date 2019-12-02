@@ -6,7 +6,10 @@ Led::Led(int red_pin,  int green_pin, int blue_pin, bool is_ambient_on, bool ini
     CONTROLLER_PIN_GREEN(green_pin),
     CONTROLLER_PIN_BLUE(blue_pin),
     AMBIENT_MODE(is_ambient_on),
-    STATE_ON(initial_state)
+    STATE_ON(initial_state),
+    STATE_RED(true),
+    STATE_GREEN(true),
+    STATE_BLUE(false)
 {
 
 }

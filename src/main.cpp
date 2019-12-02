@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -46,19 +47,19 @@ void setup(void) {
     
     led_strip.begin();
 
-    pinMode(BUILTIN_LED, OUTPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
   
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     Serial.println("");
 
     // Wait for connection
-    digitalWrite(BUILTIN_LED, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print("|");
     }
-    digitalWrite(BUILTIN_LED, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.println("");
     Serial.print("Connected to ");
     Serial.println(ssid);

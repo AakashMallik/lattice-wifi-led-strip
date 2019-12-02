@@ -21,13 +21,13 @@ class Led{
         int CONTROLLER_PIN_GREEN = 12; //D6
         int CONTROLLER_PIN_BLUE = 14; //D5
 
-        bool STATE_RED = false;
-        bool STATE_GREEN = true;
-        bool STATE_BLUE = true;
+        bool STATE_RED;
+        bool STATE_GREEN;
+        bool STATE_BLUE;
 
-        bool STATE_ON = false;
+        bool STATE_ON;
 
-        bool AMBIENT_MODE = true;
+        bool AMBIENT_MODE;
 };
 
 #endif
