@@ -47,13 +47,29 @@ void setup(void) {
     });
 
     server.on("/changecolor", HTTP_POST, [](){
-        if( !server.hasArg("code") || server.arg("code") == NULL){
-            server.send(400, "text/plain", "400: Invalid Request");
+        if( !server.hasArg("red") || server.arg("red") == NULL){
+            server.send(400, "text/plain", "400: Red parameter missing!");
             return;
         }
-        Serial.println(server.arg("code").toInt());
-        led_strip.handleColorChange(server.arg("code").toInt());
-        server.send(200, "text/plain", "Color Changed");
+        if( !server.hasArg("green") || server.arg("green") == NULL){
+            server.send(400, "text/plain", "400: Green parameter missing!");
+            return;
+        }
+        if( !server.hasArg("blue") || server.arg("blue") == NULL){
+            server.send(400, "text/plain", "400: Blue parameter missing!");
+            return;
+        }
+
+        int r = server.arg("red").toInt(), g = server.arg("green").toInt(), b = server.arg("blue").toInt();
+
+        if( (0 <= r && r <= 1024) && (0 <= g && g <= 1024) && (0 <= b && b <= 1024)){
+            led_strip.handleColorChange(r, g, b);
+            server.send(200, "text/plain", "Color Changed");
+        }
+        else{
+
+            server.send(200, "text/plain", "Hex code range error!");
+        }
     });
 
     server.on("/togglestate", HTTP_GET, [](){

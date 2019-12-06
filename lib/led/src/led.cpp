@@ -7,9 +7,9 @@ Led::Led(int red_pin,  int green_pin, int blue_pin, bool is_ambient_on, bool ini
     CONTROLLER_PIN_BLUE(blue_pin),
     AMBIENT_MODE(is_ambient_on),
     STATE_ON(initial_state),
-    STATE_RED(true),
-    STATE_GREEN(true),
-    STATE_BLUE(false)
+    DC_RED(1024),
+    DC_GREEN(1024),
+    DC_BLUE(0)
 {
 
 }
@@ -40,49 +40,10 @@ bool Led::handleToggleState(bool state){
     applyChange();
 }
 
-bool Led::handleColorChange(int code){
-    switch (code)
-    {
-    case 0:
-        STATE_RED = true;
-        STATE_GREEN = true;
-        STATE_BLUE = true;
-        break;
-    case 1:
-        STATE_RED = true;
-        STATE_GREEN = true;
-        STATE_BLUE = false;
-        break;
-    case 2:
-        STATE_RED = false;
-        STATE_GREEN = true;
-        STATE_BLUE = true;
-        break;
-    case 3:
-        STATE_RED = true;
-        STATE_GREEN = false;
-        STATE_BLUE = true;
-        break;
-    case 4:
-        STATE_RED = true;
-        STATE_GREEN = false;
-        STATE_BLUE = false;
-        break;
-    case 5:
-        STATE_RED = false;
-        STATE_GREEN = false;
-        STATE_BLUE = true;
-        break; 
-    case 6:
-        STATE_RED = false;
-        STATE_GREEN = true;
-        STATE_BLUE = false;
-        break;    
-    default:
-        break;
-    }
-    
-    STATE_ON = true;
+bool Led::handleColorChange(int r, int g, int b){
+    DC_RED = r;
+    DC_GREEN = g;
+    DC_BLUE = b;
 
     applyChange();
 }
@@ -93,9 +54,9 @@ const bool Led::isAmbient(){
 
 bool Led::applyChange(){
     if( STATE_ON ){
-        digitalWrite(CONTROLLER_PIN_RED, STATE_RED ? HIGH : LOW);
-        digitalWrite(CONTROLLER_PIN_GREEN, STATE_GREEN ? HIGH : LOW);
-        digitalWrite(CONTROLLER_PIN_BLUE, STATE_BLUE ? HIGH : LOW);
+        analogWrite(CONTROLLER_PIN_RED, DC_RED);
+        analogWrite(CONTROLLER_PIN_GREEN, DC_GREEN);
+        analogWrite(CONTROLLER_PIN_BLUE, DC_BLUE);
     }
     else{
         digitalWrite(CONTROLLER_PIN_RED, LOW);
