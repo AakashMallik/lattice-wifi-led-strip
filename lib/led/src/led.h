@@ -8,9 +8,10 @@ class Led{
 
         bool begin();
 
-        bool handleToggleAmbientMode();
-        bool handleToggleState();
-        bool handleToggleState(bool);
+        bool handleAmbientModeOn();
+        bool handleAmbientModeOff();
+        bool handleSwitchOn();
+        bool handleSwitchOff();
         bool handleColorChange(int, int, int);
 
         const bool isAmbient();
