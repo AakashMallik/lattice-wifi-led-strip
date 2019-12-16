@@ -5,7 +5,7 @@
 #include <led.h>
 
 #ifndef STASSID
-#define STASSID "Tower K Free Wifi"
+#define STASSID "K-604"
 #define STAPSK  "csgo4life"
 #endif
 
@@ -16,7 +16,7 @@ const int ANALOG_INPUT_PIN = A0;
 
 ESP8266WebServer server(80);
 
-Led led_strip(13, 12, 14, true, false);
+Led led_strip(13, 12, 14, false, false);
 
 void setup(void) {
     Serial.begin(115200);
@@ -47,22 +47,51 @@ void setup(void) {
     });
 
     server.on("/changecolor", HTTP_POST, [](){
-        if( !server.hasArg("code") || server.arg("code") == NULL){
-            server.send(400, "text/plain", "400: Invalid Request");
+        if( !server.hasArg("red") || server.arg("red") == NULL){
+            server.send(400, "text/plain", "400: Red parameter missing!");
             return;
         }
-        Serial.println(server.arg("code").toInt());
-        led_strip.handleColorChange(server.arg("code").toInt());
-        server.send(200, "text/plain", "Color Changed");
+        if( !server.hasArg("green") || server.arg("green") == NULL){
+            server.send(400, "text/plain", "400: Green parameter missing!");
+            return;
+        }
+        if( !server.hasArg("blue") || server.arg("blue") == NULL){
+            server.send(400, "text/plain", "400: Blue parameter missing!");
+            return;
+        }
+
+        int r = server.arg("red").toInt(), g = server.arg("green").toInt(), b = server.arg("blue").toInt();
+
+        if( (0 <= r && r <= 255) && (0 <= g && g <= 255) && (0 <= b && b <= 255)){
+            led_strip.handleColorChange(r, g, b);
+            server.send(200, "text/plain", "Color Changed");
+        }
+        else{
+
+            server.send(400, "text/plain", "Hex code range error!");
+        }
     });
 
-    server.on("/togglestate", HTTP_GET, [](){
-        led_strip.handleToggleState();
-        server.send(200, "text/plain", "State toggled");
+    server.on("/switch", HTTP_POST, [](){
+        if( !server.hasArg("state") || server.arg("state") == NULL){
+            server.send(400, "text/plain", "400: State parameter missing!");
+            return;
+        }
+
+        server.arg("state").toInt() == 1 ? led_strip.handleSwitchOn() : led_strip.handleSwitchOff();
+        
+        server.send(200, "text/plain", "State changed");
     });
 
-    server.on("/toggleambientmode", HTTP_GET, [](){
-        led_strip.handleToggleAmbientMode();
+    server.on("/ambientmode", HTTP_POST, [](){
+        if( !server.hasArg("state") || server.arg("state") == NULL){
+            server.send(400, "text/plain", "400: State parameter missing!");
+            return;
+        }
+
+         server.arg("state").toInt() == 1 ? led_strip.handleAmbientModeOn() : led_strip.handleAmbientModeOff();
+        
+        server.send(200, "text/plain", "Ambient mode changed");
     });
 
     server.begin();
@@ -72,10 +101,10 @@ void setup(void) {
 void loop(void) {
     if( led_strip.isAmbient() ){
         if( analogRead(ANALOG_INPUT_PIN) < 700){
-            led_strip.handleToggleState(true);
+            led_strip.handleSwitchOn();
         }
         else if( analogRead(ANALOG_INPUT_PIN) >= 100){
-            led_strip.handleToggleState(false);
+            led_strip.handleSwitchOff();
         }
     }
 

@@ -8,10 +8,11 @@ class Led{
 
         bool begin();
 
-        bool handleToggleAmbientMode();
-        bool handleToggleState();
-        bool handleToggleState(bool);
-        bool handleColorChange(int);
+        bool handleAmbientModeOn();
+        bool handleAmbientModeOff();
+        bool handleSwitchOn();
+        bool handleSwitchOff();
+        bool handleColorChange(int, int, int);
 
         const bool isAmbient();
     private:
@@ -21,9 +22,9 @@ class Led{
         int CONTROLLER_PIN_GREEN = 12; //D6
         int CONTROLLER_PIN_BLUE = 14; //D5
 
-        bool STATE_RED;
-        bool STATE_GREEN;
-        bool STATE_BLUE;
+        int DC_RED;
+        int DC_GREEN;
+        int DC_BLUE;
 
         bool STATE_ON;
 
