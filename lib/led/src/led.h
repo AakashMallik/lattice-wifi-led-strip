@@ -1,34 +1,35 @@
 #ifndef LED_H
 #define LED_H
 
-class Led{
-    public:
-        Led(int, int, int, bool, bool);
-        ~Led();
+class Led {
+public:
+  Led(int, int, int, bool, bool);
+  ~Led();
 
-        bool begin();
+  bool begin();
 
-        bool handleAmbientModeOn();
-        bool handleAmbientModeOff();
-        bool handleSwitchOn();
-        bool handleSwitchOff();
-        bool handleColorChange(int, int, int);
+  bool handleAmbientModeOn();
+  bool handleAmbientModeOff();
+  bool handleSwitchOn();
+  bool handleSwitchOff();
+  bool handleColorChange(int, int, int);
 
-        const bool isAmbient();
-    private:
-        bool applyChange();
+  const bool isAmbient();
 
-        int CONTROLLER_PIN_RED = 13; //D7
-        int CONTROLLER_PIN_GREEN = 12; //D6
-        int CONTROLLER_PIN_BLUE = 14; //D5
+private:
+  bool applyChange();
 
-        int DC_RED;
-        int DC_GREEN;
-        int DC_BLUE;
+  int CONTROLLER_PIN_RED = 13;   // D7
+  int CONTROLLER_PIN_GREEN = 12; // D6
+  int CONTROLLER_PIN_BLUE = 14;  // D5
 
-        bool STATE_ON;
+  int DC_RED;
+  int DC_GREEN;
+  int DC_BLUE;
 
-        bool AMBIENT_MODE;
+  bool STATE_ON;
+
+  bool AMBIENT_MODE;
 };
 
 #endif
