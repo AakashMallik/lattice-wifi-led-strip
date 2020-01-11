@@ -7,7 +7,9 @@
 #include <led.h>
 
 // modules
+#include <discovery.h>
 #include <http_server.h>
+#include <udp_interface.h>
 
 // SSID and PASSWORD
 #ifndef STASSID
@@ -20,9 +22,9 @@ const char *password = STAPSK;
 
 const int ANALOG_INPUT_PIN = A0;
 
-// ESP8266WebServer server(80);
 Led led_strip(13, 12, 14, false, false);
-HttpServer server(80, led_strip);
+HttpServer httpServer(80, led_strip);
+UdpInterface udpInterface(239, 255, 0, 1, 30001);
 
 void setup(void) {
   Serial.begin(115200);
@@ -44,7 +46,8 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  server.prepare();
+  httpServer.prepare();
+  udpInterface.prepare();
 }
 
 void loop(void) {
@@ -58,5 +61,10 @@ void loop(void) {
     delay(250);
   }
 
-  server.listen();
+  if (!Discovery::isAttached) {
+    udpInterface.broadcast();
+    delay(2000);
+  }
+
+  httpServer.listen();
 }
