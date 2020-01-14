@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
 
 #include <udp_interface.h>
 
@@ -30,10 +31,12 @@ bool UdpInterface::prepare() {
     Serial.write(packet.data(), packet.length());
     Serial.println();
     // reply to the client
-    packet.printf("Got %u bytes of data", packet.length());
+    // packet.printf("Got %u bytes of data", packet.length());
   });
+  return true;
 }
 
-bool UdpInterface::broadcast() { 
-  Serial.println("sending a broadcast");
-  udp.print("Hello world!"); }
+bool UdpInterface::broadcast() {
+  udp.print(WiFi.macAddress() + " " + WiFi.localIP().toString());
+  return true;
+}

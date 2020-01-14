@@ -7,6 +7,7 @@
 #include <led.h>
 
 // modules
+#include <inbuilt_led_interface.h>
 #include <discovery.h>
 #include <http_server.h>
 #include <udp_interface.h>
@@ -22,30 +23,29 @@ const char *password = STAPSK;
 
 const int ANALOG_INPUT_PIN = A0;
 
+InbuiltLedInterface ibLedInterface;
 Led led_strip(13, 12, 14, false, false);
 HttpServer httpServer(80, led_strip);
 UdpInterface udpInterface(239, 255, 0, 1, 30001);
 
 void setup(void) {
   Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   // Wait for connection
-  digitalWrite(LED_BUILTIN, LOW);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print("|");
   }
-  digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("");
   Serial.print("Connected to ");
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
+  ibLedInterface.prepare();
   httpServer.prepare();
   udpInterface.prepare();
 }
@@ -63,7 +63,7 @@ void loop(void) {
 
   if (!Discovery::isAttached) {
     udpInterface.broadcast();
-    delay(2000);
+    delay(5000);
   }
 
   httpServer.listen();
