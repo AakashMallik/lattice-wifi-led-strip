@@ -1,16 +1,19 @@
 #include <inbuilt_led_interface.h>
 
-InbuiltLedInterface::InbuiltLedInterface() {}
-
 bool InbuiltLedInterface::prepare() {
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   return true;
 }
 
-bool InbuiltLedInterface::playPattern(int &patternIndex, int &delay) {
+bool InbuiltLedInterface::playPattern(int delay_time, int patternIndex) {
   switch (patternIndex) {
   case 1:
-    Serial.println("lights camera actions");
+    // Improve
+    for (int i = 2; i < 20; i++) {
+      digitalWrite(LED_BUILTIN, (i % 2 == 0) ? HIGH : LOW);
+      delay(delay_time/i);
+    }
     break;
 
   default:

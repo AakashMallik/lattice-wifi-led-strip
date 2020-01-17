@@ -4,12 +4,11 @@
 #include <ESPAsyncUDP.h>
 
 class UdpInterface {
-  AsyncUDP udp;
+  static AsyncUDP *udp;
 
 public:
-  UdpInterface(int a, int b, int c, int d, int multicast_port);
-  bool prepare();
-  bool broadcast();
+  static bool prepare(int a, int b, int c, int d, int multicast_port);
+  static bool broadcast();
 };
 
 #endif

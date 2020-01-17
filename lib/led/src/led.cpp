@@ -1,20 +1,31 @@
 #include <Arduino.h>
 #include <led.h>
 
-Led::Led(int red_pin, int green_pin, int blue_pin, bool is_ambient_on,
-         bool initial_state)
-    : CONTROLLER_PIN_RED(red_pin), CONTROLLER_PIN_GREEN(green_pin),
-      CONTROLLER_PIN_BLUE(blue_pin), AMBIENT_MODE(is_ambient_on),
-      STATE_ON(initial_state), DC_RED(0), DC_GREEN(0), DC_BLUE(0) {
-  applyChange();
-}
+int Led::CONTROLLER_PIN_RED = 13;   // D7
+int Led::CONTROLLER_PIN_GREEN = 12; // D6
+int Led::CONTROLLER_PIN_BLUE = 14;  // D5
+int Led::DC_RED = 0;
+int Led::DC_GREEN = 0;
+int Led::DC_BLUE = 0;
+bool Led::STATE_ON = false;
+bool Led::AMBIENT_MODE = false;
 
-Led::~Led() {}
+bool Led::prepare(int red_pin, int green_pin, int blue_pin, bool is_ambient_on,
+                bool initial_state) {
+  CONTROLLER_PIN_RED = red_pin; 
+  CONTROLLER_PIN_GREEN = green_pin;
+  CONTROLLER_PIN_BLUE = blue_pin;
+  AMBIENT_MODE = is_ambient_on; 
+  STATE_ON = initial_state; 
+  DC_RED = 0; 
+  DC_GREEN = 0;
+  DC_BLUE = 0;
+  
+  pinMode(red_pin, OUTPUT);
+  pinMode(green_pin, OUTPUT);
+  pinMode(blue_pin, OUTPUT);
 
-bool Led::begin() {
-  pinMode(CONTROLLER_PIN_RED, OUTPUT);
-  pinMode(CONTROLLER_PIN_GREEN, OUTPUT);
-  pinMode(CONTROLLER_PIN_BLUE, OUTPUT);
+  return applyChange();
 }
 
 bool Led::handleAmbientModeOn() { AMBIENT_MODE = true; }
@@ -41,7 +52,7 @@ bool Led::handleColorChange(int r, int g, int b) {
   return applyChange();
 }
 
-const bool Led::isAmbient() { return AMBIENT_MODE; }
+bool Led::isAmbient() { return AMBIENT_MODE; }
 
 bool Led::applyChange() {
   if (STATE_ON) {

@@ -1,10 +1,15 @@
+#ifndef INBUILT_LED_INTERFACE
+#define INBUILT_LED_INTERFACE
+
 // arduino libs
 #include <Arduino.h>
 
 class InbuiltLedInterface {
+  static bool isOn;
 
 public:
-  InbuiltLedInterface();
-  bool prepare();
-  bool playPattern(int &patternIndex, int &delay);
+  static bool prepare();
+  static bool playPattern(int delay_time, int patternIndex);
 };
+
+#endif
