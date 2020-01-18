@@ -8,6 +8,8 @@ class HttpServer {
   static ESP8266WebServer *server;
 
 public:
+  static int PORT;
+
   static bool prepare(int port);
   static bool listen();
 };

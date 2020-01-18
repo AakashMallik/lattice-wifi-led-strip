@@ -2,19 +2,21 @@
 #include <Arduino.h>
 
 // 3rd party libs
-#include <led.h>
 #include <discovery.h>
+#include <led.h>
 
 // implemented header
 #include <http_interface.h>
 
 ESP8266WebServer *HttpServer::server = nullptr;
+int HttpServer::PORT = 80;
 
 bool HttpServer::prepare(int port) {
-  if(server != nullptr){
+  if (server != nullptr) {
     delete server;
   }
   server = new ESP8266WebServer(port);
+  HttpServer::PORT = port;
 
   server->on("/", HTTP_GET,
              []() { server->send(200, "text/plain", "Test response!"); });

@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
+#include <http_interface.h>
+
 #include <udp_interface.h>
 
 AsyncUDP *UdpInterface::udp = nullptr;
@@ -41,6 +43,7 @@ bool UdpInterface::prepare(int a, int b, int c, int d, int multicast_port) {
 }
 
 bool UdpInterface::broadcast() {
-  udp->print(WiFi.macAddress() + " " + WiFi.localIP().toString());
+  udp->print(WiFi.macAddress() + " " + WiFi.localIP().toString() + " " +
+             HttpServer::PORT);
   return true;
 }
