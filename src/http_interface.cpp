@@ -85,16 +85,13 @@ bool HttpServer::prepare(int port) {
     deserializeJson(doc, server->arg("plain"));
     JsonObject obj = doc.as<JsonObject>();
 
-    Serial.println(obj["ip"].as<String>());
-    Serial.println(obj["port"].as<String>());
-
-    Discovery::isAttached = true;
+    Discovery::attach(obj["ip"].as<String>(), obj["port"].as<String>());
 
     server->send(200, "text/plain", "Device attached successfully");
   });
 
   server->on("/detach", HTTP_POST, []() {
-    Discovery::isAttached = false;
+    Discovery::detach();
 
     server->send(200, "text/plain", "Device detached successfully");
   });
