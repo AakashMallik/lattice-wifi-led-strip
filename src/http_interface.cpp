@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 // 3rd party libs
+#include <ArduinoJson.h>
 #include <discovery.h>
 #include <led.h>
 
@@ -72,14 +73,20 @@ bool HttpServer::prepare(int port) {
   });
 
   server->on("/attach", HTTP_POST, []() {
-    if (!server->hasArg("ip") || server->arg("ip") == NULL) {
-      server->send(400, "text/plain", "400: ip parameter missing!");
-      return;
-    }
-    if (!server->hasArg("port") || server->arg("port") == NULL) {
-      server->send(400, "text/plain", "400: port parameter missing!");
-      return;
-    }
+    // if (!server->hasArg("ip") || server->arg("ip") == NULL) {
+    //   server->send(400, "text/plain", "400: ip parameter missing!");
+    //   return;
+    // }
+    // if (!server->hasArg("port") || server->arg("port") == NULL) {
+    //   server->send(400, "text/plain", "400: port parameter missing!");
+    //   return;
+    // }
+    DynamicJsonDocument doc(1024);
+    deserializeJson(doc, server->arg("plain"));
+    JsonObject obj = doc.as<JsonObject>();
+
+    Serial.println(obj["ip"].as<String>());
+    Serial.println(obj["port"].as<String>());
 
     Discovery::isAttached = true;
 
