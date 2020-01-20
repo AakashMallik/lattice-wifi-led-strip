@@ -52,9 +52,9 @@ bool UdpInterface::broadcast() {
   StaticJsonDocument<150> doc;
   doc["mac"] = WiFi.macAddress();
   doc["ip"] = WiFi.localIP().toString();
-  doc["port"] = WiFi.localIP().toString();
-  String output;
-  serializeJson(doc, output);
-  udp->print(output);
+  doc["port"] = HttpServer::PORT;
+  String udp_payload;
+  serializeJson(doc, udp_payload);
+  udp->print(udp_payload);
   return true;
 }
