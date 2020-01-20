@@ -1,8 +1,14 @@
+// stl
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
+// 3rd party lib
+#include <ArduinoJson.h>
+
+// internal module
 #include <http_interface.h>
 
+// implemented header
 #include <udp_interface.h>
 
 AsyncUDP *UdpInterface::udp = nullptr;
@@ -43,7 +49,12 @@ bool UdpInterface::prepare(int a, int b, int c, int d, int multicast_port) {
 }
 
 bool UdpInterface::broadcast() {
-  udp->print(WiFi.macAddress() + " " + WiFi.localIP().toString() + " " +
-             HttpServer::PORT);
+  StaticJsonDocument<150> doc;
+  doc["mac"] = WiFi.macAddress();
+  doc["ip"] = WiFi.localIP().toString();
+  doc["port"] = WiFi.localIP().toString();
+  String output;
+  serializeJson(doc, output);
+  udp->print(output);
   return true;
 }
