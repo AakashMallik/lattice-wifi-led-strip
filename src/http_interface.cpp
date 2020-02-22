@@ -75,14 +75,6 @@ bool HttpServer::prepare(int port) {
   });
 
   server->on("/attach", HTTP_POST, []() {
-    // if (!server->hasArg("ip") || server->arg("ip") == NULL) {
-    //   server->send(400, "text/plain", "400: ip parameter missing!");
-    //   return;
-    // }
-    // if (!server->hasArg("port") || server->arg("port") == NULL) {
-    //   server->send(400, "text/plain", "400: port parameter missing!");
-    //   return;
-    // }
     DynamicJsonDocument doc(1024);
     deserializeJson(doc, server->arg("plain"));
     JsonObject obj = doc.as<JsonObject>();
@@ -108,9 +100,6 @@ bool HttpServer::prepare(int port) {
     else{
       server->send(400, "text/plain", "Device information mismatch");
     }
-    
-
-    
   });
 
   server->begin();

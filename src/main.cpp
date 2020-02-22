@@ -9,6 +9,7 @@
 // modules
 #include <inbuilt_led_interface.h>
 #include <discovery.h>
+#include <data.h>
 #include <http_interface.h>
 #include <udp_interface.h>
 
@@ -40,6 +41,7 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
+  Data::prepare();
   InbuiltLedInterface::prepare();
   Led::prepare(13, 12, 14, false, false);
   HttpServer::prepare(80);

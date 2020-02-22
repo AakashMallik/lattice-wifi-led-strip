@@ -6,6 +6,7 @@
 #include <ArduinoJson.h>
 
 // internal module
+#include <data.h>
 #include <http_interface.h>
 
 // implemented header
@@ -49,12 +50,12 @@ bool UdpInterface::prepare(int a, int b, int c, int d, int multicast_port) {
 }
 
 bool UdpInterface::broadcast() {
-  StaticJsonDocument<150> doc;
-  doc["mac"] = WiFi.macAddress();
-  doc["ip"] = WiFi.localIP().toString();
-  doc["port"] = HttpServer::PORT;
-  String udp_payload;
-  serializeJson(doc, udp_payload);
-  udp->print(udp_payload);
+  // StaticJsonDocument<150> doc;
+  // doc["mac"] = WiFi.macAddress();
+  // doc["ip"] = WiFi.localIP().toString();
+  // doc["port"] = HttpServer::PORT;
+  // String udp_payload;
+  // serializeJson(doc, udp_payload);
+  udp->print(Data::generateUdpPayload());
   return true;
 }
