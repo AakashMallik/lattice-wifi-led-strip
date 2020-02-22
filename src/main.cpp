@@ -1,113 +1,66 @@
+// arduino libs
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266WebServer.h>
+
+// 3rd party libs
 #include <led.h>
 
+// modules
+#include <inbuilt_led_interface.h>
+#include <discovery.h>
+#include <http_interface.h>
+#include <udp_interface.h>
+
+// SSID and PASSWORD
 #ifndef STASSID
 #define STASSID "K-604"
-#define STAPSK  "csgo4life"
+#define STAPSK "csgo4life"
 #endif
 
-const char* ssid = STASSID;
-const char* password = STAPSK;
+const char *ssid = STASSID;
+const char *password = STAPSK;
 
 const int ANALOG_INPUT_PIN = A0;
 
-ESP8266WebServer server(80);
-
-Led led_strip(13, 12, 14, false, false);
-
 void setup(void) {
-    Serial.begin(115200);
-    
-    led_strip.begin();
+  Serial.begin(115200);
 
-    pinMode(LED_BUILTIN, OUTPUT);
-  
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
-    Serial.println("");
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
 
-    // Wait for connection
-    digitalWrite(LED_BUILTIN, LOW);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print("|");
-    }
-    digitalWrite(LED_BUILTIN, HIGH);
-    Serial.println("");
-    Serial.print("Connected to ");
-    Serial.println(ssid);
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print("|");
+  }
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 
-    server.on("/", HTTP_GET, [](){
-        server.send(200, "text/plain", "Test response!");
-    });
-
-    server.on("/changecolor", HTTP_POST, [](){
-        if( !server.hasArg("red") || server.arg("red") == NULL){
-            server.send(400, "text/plain", "400: Red parameter missing!");
-            return;
-        }
-        if( !server.hasArg("green") || server.arg("green") == NULL){
-            server.send(400, "text/plain", "400: Green parameter missing!");
-            return;
-        }
-        if( !server.hasArg("blue") || server.arg("blue") == NULL){
-            server.send(400, "text/plain", "400: Blue parameter missing!");
-            return;
-        }
-
-        int r = server.arg("red").toInt(), g = server.arg("green").toInt(), b = server.arg("blue").toInt();
-
-        if( (0 <= r && r <= 255) && (0 <= g && g <= 255) && (0 <= b && b <= 255)){
-            led_strip.handleColorChange(r, g, b);
-            server.send(200, "text/plain", "Color Changed");
-        }
-        else{
-
-            server.send(400, "text/plain", "Hex code range error!");
-        }
-    });
-
-    server.on("/switch", HTTP_POST, [](){
-        if( !server.hasArg("state") || server.arg("state") == NULL){
-            server.send(400, "text/plain", "400: State parameter missing!");
-            return;
-        }
-
-        server.arg("state").toInt() == 1 ? led_strip.handleSwitchOn() : led_strip.handleSwitchOff();
-        
-        server.send(200, "text/plain", "State changed");
-    });
-
-    server.on("/ambientmode", HTTP_POST, [](){
-        if( !server.hasArg("state") || server.arg("state") == NULL){
-            server.send(400, "text/plain", "400: State parameter missing!");
-            return;
-        }
-
-         server.arg("state").toInt() == 1 ? led_strip.handleAmbientModeOn() : led_strip.handleAmbientModeOff();
-        
-        server.send(200, "text/plain", "Ambient mode changed");
-    });
-
-    server.begin();
-    Serial.println("HTTP server started");
+  InbuiltLedInterface::prepare();
+  Led::prepare(13, 12, 14, false, false);
+  HttpServer::prepare(80);
+  UdpInterface::prepare(239, 255, 0, 1, 30001);
 }
 
 void loop(void) {
-    if( led_strip.isAmbient() ){
-        if( analogRead(ANALOG_INPUT_PIN) < 700){
-            led_strip.handleSwitchOn();
-        }
-        else if( analogRead(ANALOG_INPUT_PIN) >= 100){
-            led_strip.handleSwitchOff();
-        }
+  if (Led::isAmbient()) {
+    int voltage_value = analogRead(ANALOG_INPUT_PIN);
+    if (voltage_value >= 100) {
+      Led::handleSwitchOff();
+    } else {
+      Led::handleSwitchOn();
     }
+    delay(250);
+  }
 
-    server.handleClient();
-    delay(500);
+  if (!Discovery::isAttached) {
+    UdpInterface::broadcast();
+    InbuiltLedInterface::playPattern( 2500, 1 );
+  }
+
+  HttpServer::listen();
 }
