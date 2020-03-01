@@ -16,7 +16,8 @@ void Data::prepare() {
 
   // data udp becon
   (*doc_udp)["id"] = WiFi.macAddress();
-  (*doc_udp)["link"] = WiFi.localIP().toString() + ":" + HttpServer::PORT;
+  (*doc_udp)["link"] =
+      "http://" + WiFi.localIP().toString() + ":" + HttpServer::PORT;
   (*doc_udp)["type"] = "light";
   (*doc_udp)["title"] = "Radlet Plankton";
   (*doc_udp)["description"] =

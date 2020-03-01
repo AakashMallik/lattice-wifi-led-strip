@@ -2,11 +2,11 @@
 #include <discovery.h>
 
 bool Discovery::isAttached = false;
-String Discovery::hub_address = "";
+String Discovery::dock_link = "";
 
-bool Discovery::attach(String ip, String port){
+bool Discovery::attach(String dock_link){
     isAttached = true;
-    hub_address = "http://" + ip + ":" + port + "/";
+    dock_link = dock_link;
     return true;
 }  
 

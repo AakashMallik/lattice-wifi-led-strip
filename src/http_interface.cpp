@@ -79,11 +79,10 @@ bool HttpServer::prepare(int port) {
     deserializeJson(doc, server->arg("plain"));
     JsonObject obj = doc.as<JsonObject>();
 
-    if( obj["mac"].as<String>() == WiFi.macAddress() ){
-      Discovery::attach(obj["ip"].as<String>(), obj["port"].as<String>());
+    if (obj["id"].as<String>() == WiFi.macAddress()) {
+      Discovery::attach(obj["dock_link"].as<String>());
       server->send(200, "text/plain", "Device attached successfully");
-    }
-    else{
+    } else {
       server->send(400, "text/plain", "Device information mismatch");
     }
   });
@@ -93,11 +92,10 @@ bool HttpServer::prepare(int port) {
     deserializeJson(doc, server->arg("plain"));
     JsonObject obj = doc.as<JsonObject>();
 
-    if( obj["mac"].as<String>() == WiFi.macAddress() ){
+    if (obj["mac"].as<String>() == WiFi.macAddress()) {
       Discovery::detach();
       server->send(200, "text/plain", "Device detached successfully");
-    }
-    else{
+    } else {
       server->send(400, "text/plain", "Device information mismatch");
     }
   });

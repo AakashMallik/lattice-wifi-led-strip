@@ -6,9 +6,9 @@
 class Discovery {
 public:
   static bool isAttached;
-  static String hub_address;
+  static String dock_link;
 
-  static bool attach(String ip, String port);
+  static bool attach(String dock_link);
   static bool detach();
 };
 
