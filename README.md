@@ -42,6 +42,13 @@ This project Platform IO for Firmware development. The recommended IDE for devel
 
 The build build step is as simple as pressing **upload** button while on VS Code. If the physical device is connected to the development machine and the right port is selected then the firmware code should be flased without a few seconds onto the ESP8266 chip.
   
+### 1.c Circuit Diagram
+
+<p align="center">
+  <a href="" rel="noopener">
+ <img height="340px" src="./docs/circuit_diagram.jpg" alt="Circuit Diagram"></a>
+</p>
+
 ---  
 
 ## 2. Deployment :fire: <a name = "deployment"></a>
