@@ -66,6 +66,7 @@ If the Radlet Dock has been deployed successfully on the network, and the Compos
 ## 4. Authors :hammer: <a name = "authors"></a>
 
 - [@AakashMallik](https://github.com/AakashMallik)  
+- [@Prithvi](https://github.com/Prithviii)
 
 ---
 
