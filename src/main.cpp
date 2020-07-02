@@ -7,11 +7,7 @@
 #include <led.h>
 
 // modules
-#include <inbuilt_led_interface.h>
-#include <discovery.h>
-#include <data.h>
 #include <http_interface.h>
-#include <udp_interface.h>
 
 // SSID and PASSWORD
 #ifndef STASSID
@@ -35,34 +31,30 @@ void setup(void) {
     delay(500);
     Serial.print("|");
   }
+  
   Serial.println("");
   Serial.print("Connected to ");
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  Data::prepare();
-  InbuiltLedInterface::prepare();
-  Led::prepare(13, 12, 14, false, false);
+  Led::prepare(14, 13, 12, false, true);
   HttpServer::prepare(80);
-  UdpInterface::prepare(239, 255, 0, 1, 30001);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void loop(void) {
-  if (Led::isAmbient()) {
-    int voltage_value = analogRead(ANALOG_INPUT_PIN);
-    if (voltage_value >= 100) {
-      Led::handleSwitchOff();
-    } else {
-      Led::handleSwitchOn();
-    }
-    delay(250);
-  }
-
-  if (!Discovery::isAttached) {
-    UdpInterface::broadcast();
-    InbuiltLedInterface::playPattern( 2500, 1 );
-  }
+  // if (Led::isAmbient()) {
+  //   int voltage_value = analogRead(ANALOG_INPUT_PIN);
+  //   if (voltage_value >= 100) {
+  //     Led::handleSwitchOff();
+  //   } else {
+  //     Led::handleSwitchOn();
+  //   }
+  //   delay(250);
+  // }
 
   HttpServer::listen();
 }

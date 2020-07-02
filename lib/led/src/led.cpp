@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <led.h>
 
-int Led::CONTROLLER_PIN_RED = 13;   // D7
-int Led::CONTROLLER_PIN_GREEN = 12; // D6
+int Led::CONTROLLER_PIN_RED = 12;   // D7
+int Led::CONTROLLER_PIN_GREEN = 13; // D6
 int Led::CONTROLLER_PIN_BLUE = 14;  // D5
 int Led::DC_RED = 0;
 int Led::DC_GREEN = 0;
@@ -17,9 +17,6 @@ bool Led::prepare(int red_pin, int green_pin, int blue_pin, bool is_ambient_on,
   CONTROLLER_PIN_BLUE = blue_pin;
   AMBIENT_MODE = is_ambient_on; 
   STATE_ON = initial_state; 
-  DC_RED = 0; 
-  DC_GREEN = 0;
-  DC_BLUE = 0;
   
   pinMode(red_pin, OUTPUT);
   pinMode(green_pin, OUTPUT);

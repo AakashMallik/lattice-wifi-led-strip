@@ -1,12 +1,7 @@
 // stl
 #include <Arduino.h>
 
-// 3rd party libs
-#include <ArduinoJson.h>
-
 // internal module
-#include <data.h>
-#include <discovery.h>
 #include <led.h>
 
 // implemented header
@@ -61,44 +56,6 @@ bool HttpServer::prepare(int port) {
                                       : Led::handleSwitchOff();
 
     server->send(200, "text/plain", "State changed");
-  });
-
-  server->on("/ambientmode", HTTP_POST, []() {
-    if (!server->hasArg("state") || server->arg("state") == NULL) {
-      server->send(400, "text/plain", "400: State parameter missing!");
-      return;
-    }
-
-    server->arg("state").toInt() == 1 ? Led::handleAmbientModeOn()
-                                      : Led::handleAmbientModeOff();
-
-    server->send(200, "text/plain", "Ambient mode changed");
-  });
-
-  server->on("/attach", HTTP_POST, []() {
-    DynamicJsonDocument doc(1024);
-    deserializeJson(doc, server->arg("plain"));
-    JsonObject obj = doc.as<JsonObject>();
-
-    if (obj["id"].as<String>() == WiFi.macAddress()) {
-      Discovery::attach(obj["dock_link"].as<String>());
-      server->send(200, "text/plain", Data::generateUdpPayload());
-    } else {
-      server->send(400, "text/plain", "Device information mismatch");
-    }
-  });
-
-  server->on("/detach", HTTP_POST, []() {
-    DynamicJsonDocument doc(1024);
-    deserializeJson(doc, server->arg("plain"));
-    JsonObject obj = doc.as<JsonObject>();
-
-    if (obj["id"].as<String>() == WiFi.macAddress()) {
-      Discovery::detach();
-      server->send(200, "text/plain", "Device detached successfully");
-    } else {
-      server->send(400, "text/plain", "Device information mismatch");
-    }
   });
 
   server->begin();
